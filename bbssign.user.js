@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name 论坛签到工具
 // @namespace bbssign
-// @version 0.2
-// @description 整合网页自动化系列点击,DZ论坛签到工具
+// @version 0.5
+// @description 用于各种论坛自动签到
 // @include      http://*/plugin.php?id=dsu_paulsign*
 // @include      http://bbs.kafan.cn/*
 // @include      http://bbs.kafan.cn/forum.php?mod=viewthread*
@@ -10,7 +10,7 @@
 // @include      http://bbs.kafan.cn/thread-*-*-*.html
 // @include      http://bbs.wstx.com/*
 // @include      http://bbs.houdao.com/
-// @include      http://cn.club.vmall.com/dsu_paulsign-sign.html
+// @include      http://*/dsu_paulsign-sign*
 // @include      http://www.tsdm.net/*
 // @include      http://bbs.gfan.com/*
 // @include      http://www.horou.com/*
@@ -21,8 +21,8 @@
 // @include      http://*plugin.php?id=mpage_sign:sign*
 // @require      http://code.jquery.com/jquery-2.1.1.min.js
 // @note         论坛签到工具,整合自卡饭Coolkids论坛自动签到和jasonshaw网页自动化系列点击,做了一点微小的修改
-// @grant GM_openInTab
-// @grant unsafeWindow
+// @note         感谢@颜太吓的指导
+// @grant GM_xmlhttpRequest
 // @run-at document-end
 // @copyright 2013+, Coolkid
 // @copyright 2014+, jasonshaw
@@ -43,6 +43,26 @@ if(isURL("http://bbs.kafan.cn/*")){
 	}
 	qd3();
 }
+
+if(isURL("http://www.emuijd.com/plugin.php?id=dsu_paulsign:sign")){
+	//据点
+	var p = {
+		elements: ['.tr3 > div:nth-child(2) > a:nth-child(1) > img:nth-child(1)']
+	}
+	qd4();
+}
+
+
+if(isURL("http://www.gn00.com/plugin.php?id=dsu_paulsign:sign")){
+	//技术宅
+	var p = {
+		elements: ['.tr3 > div:nth-child(2) > a:nth-child(1) > img:nth-child(1)']
+		}
+	qd4();
+
+}
+
+
 if(isURL("http://cn.club.vmall.com/plugin.php?id=dsu_paulsign:sign")){
 	//华为
 	var p = {
@@ -50,21 +70,30 @@ if(isURL("http://cn.club.vmall.com/plugin.php?id=dsu_paulsign:sign")){
 	}
 	qd3();
 }
-if(isURL("http://bbs.wstx.com/*")){
+if(isURL("http://bbs.wstx.com/plugin.php?id=dsu_paulsign:sign")){
 	//外设天下
 	var p = {
-		elements: ['div.z:nth-child(3) > a:nth-child(1)']
-	}
-	qd3();
-}
-if(isURL("http://www.yeapk.com/plugin.php?id=mpage_sign:sign")){
-	//夜安卓
-	var p = {
-		elements: ['#ct > DIV:last-child > DIV:first-child > DIV > A']
+		elements: ['.tr3 > div:nth-child(2) > a:nth-child(1)']
 	}
 	qd4();
 }
 
+if(isURL("http://www.yeapk.com/plugin.php?id=mpage_sign:sign")){
+	//夜安卓
+	GM_xmlhttpRequest({
+		method:'POST',
+		url:'http://www.yeapk.com/plugin.php?id=mpage_sign:sign&inajax=1',
+		data:'formhash=4dc88acc&signsubmit=yes&handlekey=sign&moodid=1&content=123',
+		headers:{
+			//表单编码,表单默认的提交数据的格式
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		
+		onload: function(responseDetails) {
+			//alert(responseDetails.responseText);
+		}
+	});
+}
 
 
 if(isURL("http://www.tsdm.net/")){
@@ -94,13 +123,8 @@ if(isURL("http://bbs.gfan.com/")){//机锋
         return;
     }
 }
-if(isURL("http://www.gn00.com/*")){//技术宅
-	qd();
-    if(window.find("签到领奖!")){
-        window.location.href="http://www.gn00.com/plugin.php?id=dsu_paulsign:sign";
-        return;
-    }
-}
+
+
 if(isURL("http://www.horou.com/")){//河洛
     qd();
     if(window.find("签到领奖!")){
@@ -108,14 +132,13 @@ if(isURL("http://www.horou.com/")){//河洛
         return;
     }
 }
-if(isURL("http://bbs.ntrqq.net/*")){//NTRQQ
+if(isURL("http://bbs.ntrqq.net/")){//NTRQQ
     qd();
     if(window.find("签到领奖!")){
         window.location.href="http://bbs.ntrqq.net/plugin.php?id=dsu_paulsign:sign";
         return;
     }
 }
-
 
 
 function isURL(x){
@@ -172,8 +195,24 @@ if(autoClose) window.close();
 }, delay+100);
 }
 
-function qd123(){if(standby) {document.onreadystatechange = function () {
-if(document.readyState == "complete")qd3();
-}}
-else qd3();
+function qd4(){
+var elements = p.elements, i = 0;
+
+setTimeout(function(){
+var obj1 = document.getElementById("kx");
+obj1.click();
+try {
+if(elements instanceof Array) var els = p.elements;
+else {//function
+var els = p.elements();
+}
+while(els[i]){
+var obj = (p.elements instanceof Array)?document.querySelector(els[i]):els[i];
+if(obj == null) return;
+if(obj.tagName=="A" && obj.href.indexOf("javascript")<0 && obj.onclick == "undefined") GM_openInTab(obj.href);
+else obj.click();
+i++;
+}
+} catch(e){alert(e);}
+}, 400);
 }
