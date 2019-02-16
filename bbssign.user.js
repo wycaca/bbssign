@@ -106,14 +106,9 @@
 		return;
 	}
 
-	else if (isURL("www.52pojie.cn")) {
-		//吾爱破解
-		if (window.location.href.match("item=done"))
-			window.location.href = '/';
-		var p = {
-			elements: ['.qq_bind']
-		}
-		qd3();
+	//感谢 persia7emily 提供
+	else if (isURL("52pojie.cn")) { //52破解
+		document.getElementsByClassName('qq_bind')[0].click();
 		return;
 	}
 
