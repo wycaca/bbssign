@@ -2,7 +2,7 @@
 // @name		 bbsAutoSign
 // @name:zh-CN   论坛签到工具
 // @namespace    bbssign
-// @version      1.5.0
+// @version      1.5.1
 // @description  用于各种论坛自动签到
 // @include      http*://*/plugin.php?id=*sign*
 // @include      http*://bbs.kafan.cn/*
